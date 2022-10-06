@@ -1,4 +1,11 @@
+import Command.commandCommand;
+import Command.copyCommand;
+import Command.cutCommand;
+import Command.pasteCommand;
+import Command.invokerCommand;
+import Command.receiverCommand;
 import java.awt.event.ActionEvent;
+
 import java.awt.event.ActionListener;
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
@@ -18,19 +25,19 @@ import javax.swing.ScrollPaneConstants;
 import javax.swing.UIManager;
 import javax.swing.plaf.metal.MetalLookAndFeel;
 import javax.swing.plaf.metal.OceanTheme;
-// we could add "Command Patter"
+// we could add "Command Pattern"
 class editor extends JFrame implements ActionListener {
 	// Text component
-	JTextArea t;
+	JTextArea textArea;
 
 	// Frame
-	JFrame f;
+	JFrame frame;
 
 	// Constructor
 	editor()
 	{
 		// Create a frame
-		f = new JFrame("editor");
+		frame = new JFrame("editor");
 
 		try {
 			// Set metal look and feel
@@ -43,7 +50,7 @@ class editor extends JFrame implements ActionListener {
 		}
 
 		// Text component
-		t = new JTextArea();
+		textArea = new JTextArea();
 
 		// Create a menubar
 		JMenuBar mb = new JMenuBar();
@@ -106,16 +113,16 @@ class editor extends JFrame implements ActionListener {
 		// Create a menu for menu
 		JMenu m5= new JMenu("Style");
 		// Create menu items
-		JMenuItem m5i = new JMenuItem("ZoomIn");
+		JMenuItem m5i = new JMenuItem("zoomIn");
 		// Add action listener
 		m5i.addActionListener(this);
 		m4.add(m5i);
 		mb.add(m4);
 		
-		f.setJMenuBar(mb);
-		f.add(t);
-		f.setSize(500, 500);
-		f.show();
+		frame.setJMenuBar(mb);
+		frame.add(textArea);
+		frame.setSize(500, 500);
+		frame.show();
 	}
 
 	// If a button is pressed
@@ -125,24 +132,54 @@ class editor extends JFrame implements ActionListener {
 		
 		receiverCommand receiver = new receiverCommand();
 		invokerCommand invoker = new invokerCommand();
-		receiver.setTextArea(t);
-		receiver.setJFrame(f);
 		
-		if (s.equals("cut")) {
-//			t.cut();
+		
+		receiver.setTextArea(textArea);
+		receiver.setJFrame(frame);
+		switch(s) {
+		case "cut":
 			commandCommand cut = new cutCommand(receiver);
 			invoker.addCommend(cut);
 			invoker.execute();
+			break;
+		case "copy":
+			commandCommand copy = new copyCommand(receiver);
+			invoker.addCommend(copy);
+			invoker.execute();
+			break;
+		case "zoomIn":
+			break;	
+		case "paste":
+			commandCommand paste = new pasteCommand(receiver);
+			invoker.addCommend(paste);
+			invoker.execute();
+			break;
+		case "Save":
+			break;
+		case "Print":
+			break;
+		case "Open":
+			break;
+		case "New":
+			break;
+		case "close":
+			break;
+		case "ScrollBar":
+			break;
+		}
+		if (s.equals("cut")) {
+//			t.cut();
+			
 			
 		}
-		else if(s.equals("ZoomIn")){
+		else if(s.equals("zoomIn")){
 			System.out.println("Y");
 		}
 		else if (s.equals("copy")) {
-			t.copy();
+//			textArea.copy();
 		}
 		else if (s.equals("paste")) {
-			t.paste();
+			textArea.paste();
 		}
 		else if (s.equals("Save")) {
 			// Create an object of JFileChooser class
@@ -164,26 +201,26 @@ class editor extends JFrame implements ActionListener {
 					BufferedWriter w = new BufferedWriter(wr);
 
 					// Write
-					w.write(t.getText());
+					w.write(textArea.getText());
 
 					w.flush();
 					w.close();
 				}
 				catch (Exception evt) {
-					JOptionPane.showMessageDialog(f, evt.getMessage());
+					JOptionPane.showMessageDialog(frame, evt.getMessage());
 				}
 			}
 			// If the user cancelled the operation
 			else
-				JOptionPane.showMessageDialog(f, "the user cancelled the operation");
+				JOptionPane.showMessageDialog(frame, "the user cancelled the operation");
 		}
 		else if (s.equals("Print")) {
 			try {
 				// print the file
-				t.print();
+				textArea.print();
 			}
 			catch (Exception evt) {
-				JOptionPane.showMessageDialog(f, evt.getMessage());
+				JOptionPane.showMessageDialog(frame, evt.getMessage());
 			}
 		}
 		else if (s.equals("Open")) {
@@ -217,26 +254,26 @@ class editor extends JFrame implements ActionListener {
 					}
 
 					// Set the text
-					t.setText(sl);
+					textArea.setText(sl);
 				}
 				catch (Exception evt) {
-					JOptionPane.showMessageDialog(f, evt.getMessage());
+					JOptionPane.showMessageDialog(frame, evt.getMessage());
 				}
 			}
 			// If the user cancelled the operation
 			else
-				JOptionPane.showMessageDialog(f, "the user cancelled the operation");
+				JOptionPane.showMessageDialog(frame, "the user cancelled the operation");
 		}
 		else if (s.equals("New")) {
-			t.setText("");
+			textArea.setText("");
 		}
 		else if (s.equals("close")) {
-			f.setVisible(false);
+			frame.setVisible(false);
 		}
 		else if(s.equals("ScrollBar")) {
-			JScrollPane pane = new JScrollPane(t, ScrollPaneConstants.VERTICAL_SCROLLBAR_ALWAYS,
+			JScrollPane pane = new JScrollPane(textArea, ScrollPaneConstants.VERTICAL_SCROLLBAR_ALWAYS,
 					ScrollPaneConstants.HORIZONTAL_SCROLLBAR_ALWAYS);
-			f.add(pane);
+			frame.add(pane);
 		}
 	}
 
